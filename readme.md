@@ -8,24 +8,38 @@ AMD Radeon:tm: ProRender is a powerful physically-based rendering engine that en
 https://www.amd.com/en/technologies/radeon-prorender
 
 This repo contains :
-- the AMD Radeon:tm: ProRender library: includes and built binaries.
-- some tutorials demo samples.
+- The AMD Radeon:tm: ProRender library: includes and built binaries.  
+  
+- [Some tutorials demo samples:](https://github.com/GPUOpen-LibrariesAndSDKs/RadeonProRenderSDK/tree/master/tutorials#readme)  
+![](Resources/doc/doc2.png)
 
 ## Building and running the Tutorials
 
 On Visual Studio:
 ```
 > cd tutorials
-> ..\premake5\win\premake5.exe vs2019
+> ..\premake5\win\premake5.exe vs2022
+( replace vs2022 by the version of your choice: vs2019, vs2017... )
 then open tutorials/Tutorials.sln
 ```
 
-On Linux:  
+On Ubuntu 18:  
 Dependencies on Linux for the tutorials: GLEW, GLUT, Pthread.
 ```
 > cd tutorials
 > sudo chmod +x ../premake5/linux64/premake5
 > ../premake5/linux64/premake5 gmake
+> make -j config=release_x64
+```
+
+On Centos 7:  
+Same dependencies than Ubuntu.  
+You should also update your GCC, we have tested it with devtoolset-10 (yum install devtoolset-10)
+```
+> cd tutorials
+> sudo chmod +x ../premake5/linux64/premake5
+> ../premake5/linux64/premake5 --centos gmake
+> source scl_source enable devtoolset-10
 > make -j config=release_x64
 ```
 

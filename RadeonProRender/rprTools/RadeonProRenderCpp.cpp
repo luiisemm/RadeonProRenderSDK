@@ -13,6 +13,7 @@
 #include "RadeonProRender_MaterialX.h"
 #include <cassert>
 #include <vector>
+#include "rprDeprecatedApi.h"
 
 #ifdef RPR_CPPWRAPER_DISABLE_MUTEXLOCK
 #define RPR_CPPWRAPER_MUTEXLOCK
@@ -552,9 +553,9 @@ Status Context::GetFunctionPtr(rpr_char const* function_name, void** out_functio
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 
-Status Context::ResolveFrameBuffer(FrameBuffer* src_frame_buffer, FrameBuffer* dst_frame_buffer, rpr_bool normalizeOnly) {
+Status Context::ResolveFrameBuffer(FrameBuffer* src_frame_buffer, FrameBuffer* dst_frame_buffer, rpr_bool noDisplayGamma) {
     RPR_CPPWRAPER_CALL_PREFIX
-    rprContextResolveFrameBuffer(m_context, GetRprObject(src_frame_buffer), GetRprObject(dst_frame_buffer), normalizeOnly)
+    rprContextResolveFrameBuffer(m_context, GetRprObject(src_frame_buffer), GetRprObject(dst_frame_buffer), noDisplayGamma)
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 
@@ -819,6 +820,12 @@ Status Camera::SetNearPlane(rpr_float near) {
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 
+Status Camera::SetPostScale(rpr_float scale) {
+    RPR_CPPWRAPER_CALL_PREFIX
+    rprCameraSetPostScale(GetRprObject(this), scale)
+    RPR_CPPWRAPER_CALL_SUFFIX
+}
+
 Status Camera::SetFarPlane(rpr_float far) {
     RPR_CPPWRAPER_CALL_PREFIX
     rprCameraSetFarPlane(GetRprObject(this), far)
@@ -840,6 +847,12 @@ Status Shape::SetTransform(float const* transform, rpr_bool transpose) {
 Status Shape::SetVertexValue(rpr_int setIndex, rpr_int const* indices, rpr_float const* values, rpr_int indicesCount) {
     RPR_CPPWRAPER_CALL_PREFIX
     rprShapeSetVertexValue(GetRprObject(this), setIndex, indices, values, indicesCount)
+    RPR_CPPWRAPER_CALL_SUFFIX
+}
+
+Status Shape::SetPrimvar(rpr_uint key, rpr_float const * data, rpr_uint floatCount, rpr_uint componentCount, PrimvarInterpolationType interop) {
+    RPR_CPPWRAPER_CALL_PREFIX
+    rprShapeSetPrimvar(GetRprObject(this), key, data, floatCount, componentCount, interop )
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 
@@ -996,6 +1009,12 @@ Status Light::SetTransform(float const* transform, rpr_bool transpose) {
 Status Light::SetGroupId(rpr_uint groupId) {
     RPR_CPPWRAPER_CALL_PREFIX
     rprLightSetGroupId(GetRprObject(this), groupId)
+    RPR_CPPWRAPER_CALL_SUFFIX
+}
+
+Status Light::SetVisibilityFlag(LightInfo visibilityFlag, rpr_bool visible) {
+    RPR_CPPWRAPER_CALL_PREFIX
+    rprLightSetVisibilityFlag(GetRprObject(this), visibilityFlag, visible)
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 
@@ -1361,6 +1380,12 @@ Status MaterialNode::SetInput(MaterialNodeInput in_input, rpr_uint in_value) {
 Status MaterialNode::SetInput(MaterialNodeInput in_input, Image* image) {
     RPR_CPPWRAPER_CALL_PREFIX
     rprMaterialNodeSetInputImageDataByKey(GetRprObject(this), in_input, GetRprObject(image))
+    RPR_CPPWRAPER_CALL_SUFFIX
+}
+
+Status MaterialNode::SetInput(MaterialNodeInput in_input, Light* light) {
+    RPR_CPPWRAPER_CALL_PREFIX
+    rprMaterialNodeSetInputLightDataByKey(GetRprObject(this), in_input, GetRprObject(light))
     RPR_CPPWRAPER_CALL_SUFFIX
 }
 

@@ -127,11 +127,11 @@ public:
 		}
 	};
 
-	MATBALL Init(rpr_context context, int shapeShiftX, int shapeShiftY, bool usingHybridContext=false);
+	MATBALL Init(rpr_context context, int shapeShiftX, int shapeShiftY, bool forceUberMaterialForFloor=false);
 
 	void Clean();
 
-	void Render(const std::string& outImgFileName, int iterationCount = 100);
+	void Render(const std::string& outImgFileName, int iterationCount = 100, bool useResolveFramebuffer=true);
 
 	MATBALL AddMatball(int shiftX, int shiftY, bool createAsInstance=true);
 
@@ -158,13 +158,12 @@ public:
 
 	const rpr_framebuffer_desc m_framebuffer_desc = { 640 , 480};
 	const rpr_framebuffer_format m_framebuffer_fmt = { 4, RPR_COMPONENT_TYPE_FLOAT32 };
-
-	bool m_usingHybridContext;
 };
 
 
 //
-// Garbage Collector functions :
+// Simple Garbage Collector for Radeon ProRender objects.
+// Add RPR objects with GCAdd. Then call GCClean to clear each object
 //
 class RPRGarbageCollector
 {
@@ -175,6 +174,7 @@ public:
 	void GCAdd(rpr_shape n)			{ m_rprNodesCollector.push_back(n); }
 	void GCAdd(rpr_light n)			{ m_rprNodesCollector.push_back(n); }
 	void GCAdd(rpr_framebuffer n)	{ m_rprNodesCollector.push_back(n); }
+	void GCAdd(rpr_camera n)		{ m_rprNodesCollector.push_back(n); }
 	
 	void GCClean()
 	{
@@ -202,5 +202,9 @@ rpr_status CreateAMDFloor(
 // Create an environment light from an HDR image. commonly used by several demos.
 rpr_status CreateNatureEnvLight(rpr_context context, rpr_scene scene, RPRGarbageCollector& gc, float power);
 
-
+// some helper functions to create quads meshes easily
+rpr_shape CreateQuad(RPRGarbageCollector& gc, rpr_context context, rpr_scene scene, vertex* meshVertices, unsigned int meshVertices_nbOfElement );
+rpr_shape CreateQuad_YZ(RPRGarbageCollector& gc, rpr_context context, rpr_scene scene, float ax, float ay, float bx, float by, float X, float normal);
+rpr_shape CreateQuad_XZ(RPRGarbageCollector& gc, rpr_context context, rpr_scene scene, float ax, float ay, float bx, float by, float Y, float normal);
+rpr_shape CreateQuad_XY(RPRGarbageCollector& gc, rpr_context context, rpr_scene scene, float ax, float ay, float bx, float by, float Z, float normal);
 

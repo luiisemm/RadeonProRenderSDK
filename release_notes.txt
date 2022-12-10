@@ -3,6 +3,218 @@
 -------------------------------------------
 
 ################################################################################################################
+RPR SDK 2.02.16 - 29 September 2022
+
+## NORTHSTAR :
+RPR-1119  - (Bug)    - Fix RprsRender to process parameters correctly
+RPR-1118  - (Task)   - Expose image filter settings to RprsRender
+RPR-1115  - (Task)   - Support a combination Rounded corner and normal/bump mapping
+RPR-1107  - (Bug)    - Fix RprsRender to export image as exr format when tiled rendering
+RPR-1104  - (Bug)    - Fix camera view on RprsRender when tiled rendering
+RPR-1102  - (Task)   - Add mesh ID aov
+RPR-1101  - (Bug)    - Fix UDIM texture with exr format
+RPR-1100  - (Task)   - Add post scale support
+RPR-1091  - (Bug)    - Fix MaterialX coat material
+RPR-1088  - (Task)   - Fix behavior of RPR_SHAPE_VISIBILITY_REFLECTION for reflection catchers
+RPR-1040  - (Bug)    - Fix RPR_MATERIAL_NODE_UV_TRIPLANAR stretched texture issue
+RPR-283   - (Task)   - Add voluma and sss aovs
+RPR-408   - (Task)   - Add bevel shader support
+
+## HybridPro :
+
+-- Features:
+* [RPRHYB-458] D3D12 (#950)
+* [RPRHYB-632] IES light (#1036)
+* [RPRHYB-613] Motion Blur ( transform ) (#1037)
+* [RPRHYB-648] OpenColorIO texture color spaces (#1048)
+* [RPRHYB-642] Matx refraction (#1042)
+* [RPRHYB-617] Add support of RPR_MATERIAL_NODE_UV_TRIPLANAR (#1024)
+* [RPRHYB-568] Hybrid mode (#1032)
+* [RPRHYB-615] Support new Int ObjectID in ProRender api with Hybrid (#1034)
+* [RPRHYB-604] RPR_AOV_DIRECT_REFLECT (#1020)
+* [RPRHYB-605] RPR_AOV_INDIRECT_REFLECT (#1020)
+* [RPRHYB-594] RPR_AOV_VOLUME (#1013)
+* [RPRHYB-601] RPR_AOV_INDIRECT_DIFFUSE (#1016)
+* [RPRHYB-595] RPR_AOV_DIRECT_DIFFUSE (#1014)
+* [RPRHYB-607] RPR_AOV_VARIANCE (#1019)
+* [RPRHYB-602] RPR_AOV_DIRECT_ILLUMINATION (#1017)
+* [RPRHYB-603] RPR_AOV_INDIRECT_ILLUMINATION (#1017)
+* [RPRHYB-589] RPR_AOV_REFRACT (#1010)
+* [RPRHYB-591] RPR_AOV_GEOMETRIC_NORMAL (#1007)
+* [RPRHYB-588] RPR_AOV_CAMERA_NORMAL (#1006)
+* [RPRHYB-587] RPR_AOV_OBJECT_GROUP_ID (#1002)
+* [RPRHYB-547] Improve support of materials with alpha test (#983)
+* [RPRHYB-532] Backscattering (#1038)
+* [RPRHYB-634] Procedural curves tracing support (#1051)
+* RPR_MATERIAL_NODE_OP_SHUFFLE_YZWX (#1021)
+* RPR_MATERIAL_NODE_OP_SHUFFLE_ZWXY (#1021)
+* RPR_MATERIAL_NODE_OP_SHUFFLE_WXYZ (#1021)
+* RPR_MATERIAL_NODE_OP_MAT_MUL (#1025)
+* RPR_MESH_IS_DYNAMIC_MESH handling (#1008)
+* Add Photo Linear tonemap (#1029)
+
+-- Fixes:
+* [RPRHYB-641] Matx emission fix (#1041)
+* [RPRHYB-614] Matx compile errors (#1031)
+* [RPRHYB-584] Embedded shaders reload (#997)
+* [RPRHYB-504] Hang on AMD GPU (Toyshop scene) (#1003)
+* [RPRHYB-659] Black areas/artifacts issue with MaterialX and HybridPro in Web USD Viewer (#1052)
+* [RPRHYB-713] Broken MatX materials should only render the specific object black (#1056)
+* Per-face materials fixed for the instanced objects (#910)
+* Direct light sampling of uber emissives (#1026)
+* Material source index calculation fix (#1009)
+* Fix MaterialX normal mapping (#1057)
+* Fixed inversed Triplanar V-coord (#1055)
+
+-- Other:
+* [RPRHYB-490] TA Improvements (#1022)
+* [RPRHYB-578] ReSTIR GI Improvements (#1015)
+* [RPRHYB-654] Prevent exporting MaterialX symbols in Linux (#1045)
+* [RPRHYB-573] ASVGF gradient improvement (#985)
+* [RPRHYB-520] Material sorting (#1001)
+* [RPRHYB-583] Glslang submodule (#998)
+* [RPRHYB-579] Solve reports from Legal (#1004)
+* Specular demodulation (#1030)
+* Curve node optimization (#901)
+* Removed duplicate MAT_MUL operation (#1028)
+* Atrous weights (#1027)
+
+
+## RPR API :
+  * add rprCameraSetPostScale feature: scale the final rendering.
+  * add RPR_AOV_MESH_ID AOV: AOV that renders the ID of mesh (it's not the same than RPR_AOV_OBJECT_ID, because for instances, RPR_AOV_MESH_ID renders color from the parents).
+  * RPR_AOV_SSS: AOV rendering SSS volumes.
+  * RPR_MATERIAL_NODE_ROUNDED_CORNER: new material to have a "Rounded Corned" ( Bevel ) on objects.
+
+################################################################################################################
+RPR SDK 2.02.15 - 15 July 2022
+
+## NORTHSTAR :
+RPR-1073  - (Bug)    - Fix darkening issue of toon shader with transparency
+RPR-1072  - (Bug)    - Fix emission with transparency casts incorrect shadow
+RPR-1068  - (Bug)    - Fix reflection catcher doesn't catch emission
+RPR-1062  - (Task)   - Expose ObjectID aov in RPR API as integer type
+RPR-1042  - (Task)   - Absortion support for thin surfaces
+RPR-1008  - (Task)   - Extend cryptomatte for reflection
+RPR-1005  - (Task)   - Add progress callback for better logging with scene update, cache creation and render time
+RPR-275   - (Task)   - Add pixel filter support ( Anti-aliasing )
+
+## RPR API :
+  * Those context parameter have been removed :
+      RPR_CONTEXT_IMAGE_FILTER_BOX_RADIUS 
+      RPR_CONTEXT_IMAGE_FILTER_GAUSSIAN_RADIUS 
+      RPR_CONTEXT_IMAGE_FILTER_TRIANGLE_RADIUS 
+      RPR_CONTEXT_IMAGE_FILTER_MITCHELL_RADIUS 
+      RPR_CONTEXT_IMAGE_FILTER_LANCZOS_RADIUS 
+      RPR_CONTEXT_IMAGE_FILTER_BLACKMANHARRIS_RADIUS 
+    and replaced by a single parameter : RPR_CONTEXT_IMAGE_FILTER_RADIUS.
+
+  * typo fixed:  RPR_CONTEXT_RAY_CAST_EPISLON  -->  RPR_CONTEXT_RAY_CAST_EPSILON
+
+  * 3 new callbacks has been added to improve the measure of performance :
+     RPR_CONTEXT_UPDATE_TIME_CALLBACK_*            -->  get the time it took to update/compile the scene inside the core rendering engine.
+     RPR_CONTEXT_RENDER_TIME_CALLBACK_*            -->  get the time it took to run the actual rendering operation.
+     RPR_CONTEXT_FIRST_ITERATION_TIME_CALLBACK_*   -->  get the time it took to run the first rendering iteration. This time could he higher than next iteration as first iteration is creating some cache.
+                                                        First iteration time callback is only called when a rendering is done from a cleared framebuffer.
+     Those callbacks are triggered during the rprContextRender / rprContextRenderTile calls.
+     They have the same structure than the already existing RPR_CONTEXT_RENDER_UPDATE_CALLBACK_* meaning :   void callback( float , void*  )
+     First argument is time in milliseconds, second argument is  RPR_CONTEXT_***_CALLBACK_DATA.
+     example:
+     void updateTimeCallback( float timems, void* userData ) {  *((float*)userData) = timems;  }
+     float updateTimeFromCallback = 0.0f;
+     rprContextSetParameterByKeyPtr(ctxt, RPR_CONTEXT_UPDATE_TIME_CALLBACK_FUNC, (void*)updateTimeCallback);
+     rprContextSetParameterByKeyPtr(ctxt, RPR_CONTEXT_UPDATE_TIME_CALLBACK_DATA, &updateTimeFromCallback);
+
+
+
+################################################################################################################
+RPR SDK 2.02.14 - 09 June 2022
+
+## NORTHSTAR :
+RPR-1058 - (Bug)    - Fix render layer with light
+RPR-1048 - (Bug)    - Fix mesh subdivision crash on CPU
+RPR-1043 - (Bug)    - fix light IBL crash on Linux
+RPR-557  - (Bug)    - Fix unexpected halo around geometry when using shadowcatcher and reflectioncatcher
+RPR-822  - (Bug)    - Fix bumpmap that isn't working
+
+
+## RPR API :
+  * rprCameraSetLinearMotion, rprCameraSetAngularMotion, rprShapeSetLinearMotion, rprShapeSetAngularMotion, rprShapeSetScaleMotion has been moved to Deprecated API header.
+  * new function: rprLightSetVisibilityFlag / RPR_LIGHT_VISIBILITY_LIGHT. Expose a way to make the disk/sphere shape visible for disk/sphere lights. This flag should stay false for most of usages.
+  * new function: rprShapeSetEnvironmentLight / RPR_SHAPE_ENVIRONMENT_LIGHT. Used for compositing. With this flag TRUE, the shape is handled as IBL and is not shown on AOVs.
+
+################################################################################################################
+RPR SDK 2.02.13 - 27 April 2022
+
+## NORTHSTAR :
+Fix render artifact with primvars on RX6800XT
+Fix transparency artifact with background override
+Add option to choose UV set for contour extraction ( RPR_CONTEXT_CONTOUR_UV_SECONDARY )
+Improve performance of HIP backend
+Fix volume border cutting artifact
+MaterialX loader improvements for Northstar renderer: more materials are now supported - 'place2d' is now supported.
+with RPR_CONTEXT_RANDOM_SEED we can set the random seed of the renderer.
+
+
+################################################################################################################
+RPR SDK 2.02.12 - 09 March 2022
+
+## NORTHSTAR :
+RPR-1001 - (Bug)      - Fix the crash with a curve scene
+RPR-993  - (Bug)      - Fix atmosphere volume effect with IES light
+RPR-264  - (Task)     - Use mid color of toon shader as albedo AOV
+RPR-149  - (Task)     - Add editable fog direction
+RPR-83   - (Bug)      - Fix transparent artifact inside volume
+RPR-57   - (Task)     - Add light linking support for toon shader
+
+## RPR API :
+ * MaterialX loader improvements for Northstar renderer: more materials are now supported.
+
+################################################################################################################
+RPR SDK 2.02.11 - 07 Febrary 2022
+
+## NORTHSTAR :
+RPR-502 - (Bug)      - Fix darkening artifact at override_reflecttransparent
+RPR-551 - (Bug)      - Fix Inconsistent bilinear interpolation between GPU and CPU
+RPR-81  - (Bug)      - Fix Incorrect motion blur by rotating
+RPR-45  - (Bug)      - Fix multi-transparent black artifact
+RPR-85  - (Bug)      - Add clamp parameter of atmosphere volume
+RPR-88  - (Bug)      - Fix incorrect render of mix standard surface in MaterialX
+RPR-60  - (Task)     - A new visibility flag RPR_SHAPE_VISIBILITY_RECEIVE_SHADOW / RPR_CURVE_VISIBILITY_RECEIVE_SHADOW
+RPR-74  - (Bug)      - Fix crash in contour debug mode
+RPR-62  - (Task)     - Extend cryptomatte for indirect reflection and refraction
+RPR-80  - (Task)     - Add ramp node support
+RPR-61  - (Task)     - Add vertex value (prim var) support
+RPR-38  - (Bug)      - Fix the issue that uber emissive is always in double-sided mode
+
+## RPR API :
+ * Add of new API for Primvar: rpr_primvar_interpolation_type , RPR_SHAPE_PRIMVARS , RPR_MATERIAL_NODE_PRIMVAR_LOOKUP , rprShapeSetPrimvar.
+   A tutorial demo will be added in the future to illustrate this feature.
+
+ * New context parameter: RPR_CONTEXT_ATMOSPHERE_VOLUME_RADIANCE_CLAMP : clamp the radiance for atmosphere volume.
+
+ * A new RPR_MATERIAL_NODE_RAMP node has been exposed. This Ramp can use N control points and we can change the interpolation type.
+   A tutorial demo will be added in the future to illustrate this feature.
+
+ * New "visibility" flag: RPR_SHAPE_VISIBILITY_RECEIVE_SHADOW / RPR_CURVE_VISIBILITY_RECEIVE_SHADOW. 
+   If turned to FALSE, the shape / curve doesn't receive shadow. 
+   Like all other RPR_SHAPE_VISIBILITY_* / RPR_CURVE_VISIBILITY_* flags, it will be modified when calling rprShapeSetVisibility / rprCurveSetVisibility.
+
+ * Revisiting cryptomatte. 
+   New paramters: RPR_CONTEXT_CRYPTOMATTE_EXTENDED, PR_CONTEXT_CRYPTOMATTE_SPLIT_INDIRECT,
+                  RPR_AOV_CRYPTOMATTE_MAT3, RPR_AOV_CRYPTOMATTE_MAT4, RPR_AOV_CRYPTOMATTE_MAT5,
+                  RPR_AOV_CRYPTOMATTE_OBJ3, RPR_AOV_CRYPTOMATTE_OBJ4, RPR_AOV_CRYPTOMATTE_OBJ5.
+   RPR_CONTEXT_CRYPTOMATTE_EXTENDED : Activate the Extended mode ( default value is 0 ).
+                                      rprContextSetParameterByKey1u(ctx, RPR_CONTEXT_CRYPTOMATTE_EXTENDED, v);
+                                      If the Extended Mode is enabled, the 6 new AOV (MAT3~MAT5 and OBJ3~OBJ5) must be attached to context ( with rprContextSetAOV ).
+   PR_CONTEXT_CRYPTOMATTE_SPLIT_INDIRECT : If you set PR_CONTEXT_CRYPTOMATTE_SPLIT_INDIRECT = 1 with RPR_CONTEXT_CRYPTOMATTE_EXTENDED = 1 
+                                           then indirect reflections/refractions of objects have different id from direct visibility. 
+                                           The default value is 0.
+                                           rprContextSetParameterByKey1u(ctx, PR_CONTEXT_CRYPTOMATTE_SPLIT_INDIRECT, v);
+
+
+
+################################################################################################################
 RPR SDK 2.02.10 - 06 December 2021
 
 ## NORTHSTAR :

@@ -23,14 +23,15 @@ extern "C" {
 #define RPR_MATERIAL_INPUT_CAST_SHADOW                  0x11001U
 
 /* rpr uber material layers */
-#define RPR_UBER_MATERIAL_LAYER_EMISSION        (1<<0)
-#define RPR_UBER_MATERIAL_LAYER_TRANSPARENCY    (1<<1)
-#define RPR_UBER_MATERIAL_LAYER_COATING         (1<<2)
-#define RPR_UBER_MATERIAL_LAYER_REFLECTION      (1<<3)
-#define RPR_UBER_MATERIAL_LAYER_DIFFUSE         (1<<4)
-#define RPR_UBER_MATERIAL_LAYER_REFRACTION      (1<<5)
-#define RPR_UBER_MATERIAL_LAYER_SHADING_NORMAL  (1<<6)
-
+#define RPR_UBER_MATERIAL_LAYER_EMISSION             (1<<0)
+#define RPR_UBER_MATERIAL_LAYER_TRANSPARENCY         (1<<1)
+#define RPR_UBER_MATERIAL_LAYER_COATING              (1<<2)
+#define RPR_UBER_MATERIAL_LAYER_REFLECTION           (1<<3)
+#define RPR_UBER_MATERIAL_LAYER_DIFFUSE              (1<<4)
+#define RPR_UBER_MATERIAL_LAYER_REFRACTION           (1<<5)
+#define RPR_UBER_MATERIAL_LAYER_SHADING_NORMAL       (1<<6)
+#define RPR_UBER_MATERIAL_LAYER_TRANSPARENCY_MASK    (1<<7)
+#define RPR_UBER_MATERIAL_LAYER_BACKSCATTER          (1<<8)
 
 /*rpr_material_node_arithmetic_operation*/
 #define RPR_MATERIAL_NODE_OP_CEIL 0x102a
@@ -85,7 +86,7 @@ extern "C" {
 #define RPR_MATERIAL_NODE_OP_SMOOTH_STEP 0x105a
 #define RPR_MATERIAL_NODE_OP_ATAN2 0x105b
 
-#define RPR_MATERIAL_INPUT_UBER_MATERIAL_ID_COLOR 0x1100
+#define RPR_MATERIAL_INPUT_UBER_TRANSPARENCY_MASK 0x1500
 
 /*rpr_material_node_arithmetic_operation*/
 #define RPR_MATERIAL_NODE_OP_SAMPLER 0x1000
@@ -104,18 +105,17 @@ extern "C" {
 /* rpr_context_properties names */
 #define RPR_CONTEXT_CREATEPROP_HYBRID_KERNELS_PATH_INFO 0x1600
 #define RPR_CONTEXT_CREATEPROP_HYBRID_ACC_MEMORY_SIZE 0x1601
-#define RPR_CONTEXT_CREATEPROP_HYBRID_VERTEX_MEMORY_SIZE 0x1602
-#define RPR_CONTEXT_CREATEPROP_HYBRID_INDEX_MEMORY_SIZE 0x1603
-#define RPR_CONTEXT_CREATEPROP_HYBRID_STAGING_MEMORY_SIZE 0x1604
-#define RPR_CONTEXT_CREATEPROP_HYBRID_ATTRIBUTE_MEMORY_SIZE 0x1605
-#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_VCT 0x1606 // Tells Hybrid to enable support for VCT(Voxel Cone Tracing).
+#define RPR_CONTEXT_CREATEPROP_HYBRID_MESH_MEMORY_SIZE 0x1602
+#define RPR_CONTEXT_CREATEPROP_HYBRID_STAGING_MEMORY_SIZE 0x1603
+#define RPR_CONTEXT_CREATEPROP_HYBRID_SCRATCH_MEMORY_SIZE 0x1604 // Size of acceleration scratch pool
+#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_VCT 0x1605 // Tells Hybrid to enable support for VCT(Voxel Cone Tracing).
                                                         // Enabling this requires vulkan implementation to support VK_EXT_consevative_rasterisation
                                                         // and in case of VK inter-op mode it must be enabled on provided device
-#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_PER_FACE_MATERIALS 0x1607 // Tells Hybrid to enable support for per-face materials.
+#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_PER_FACE_MATERIALS 0x1606 // Tells Hybrid to enable support for per-face materials.
                                                                        // This functionality requires additional memory on both -
                                                                        // CPU and GPU even when no per-face materials set in scene.
-#define RPR_CONTEXT_CREATEPROP_HYBRID_FACE_MEMORY_SIZE 0x1608 // Size of per-face memory buffer in bytes. Used only if per-face materials enabled
-#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_RADEON_RAYS 0x1609 // Use RadeonRays instead of native Vulkan VK_KHR_ray_tracing extension for raytracing.
+#define RPR_CONTEXT_CREATEPROP_HYBRID_ENABLE_RADEON_RAYS 0x1607 // Use RadeonRays instead of native Vulkan VK_KHR_ray_tracing extension for raytracing.
+#define RPR_CONTEXT_CREATEPROP_HYBRID_VIDEO_API 0x1608 // Use RadeonRays instead of native Vulkan VK_KHR_ray_tracing extension for raytracing.
 
 struct RPRHybridKernelsPathInfo
 {
@@ -124,7 +124,6 @@ struct RPRHybridKernelsPathInfo
 };
 
 //to avoid overlap
-#define RPR_CONTEXT_RANDOM_SEED     0x1000 // name: "randseed"
 #define RPR_CONTEXT_RENDER_QUALITY  0x1001 // name: "render_quality"
 #define RPR_CONTEXT_NUMBER_PRERENDERED_FRAMES 0x1002 // name: "num_prerendered_frames"
 #define RPR_CONTEXT_SSAO_RADIUS     0x1003 // name: "ssao.radius"
@@ -174,9 +173,24 @@ struct RPRHybridKernelsPathInfo
 #define RPR_CONTEXT_EXPOSURE 0x1030
 #define RPR_CONTEXT_TONE_MAPPING 0x1031
 #define RPR_CONTEXT_ENABLE_VOLUMES 0x1032 // Enable volume rendering. It is recommended to turn off this feature  (if scene hasn't volumes) because it creates a small overhead
-#define RPR_CONTEXT_RESTIR_GI 0x1033
+#define RPR_CONTEXT_RESTIR_GI 0x1033 // Enable ReSTIR GI
 #define RPR_CONTEXT_PSR_ATTENUATION 0x1034 // Path Space Regularization: Attenuation factor for roughness. [0.0, 1.0], 0.0 - Unbiased, high variance, 1.0 - Biased, low variance
 #define RPR_CONTEXT_MATERIAL_CACHE 0x1035 // Reduce shaders compilation time, in some cases can increase performance
+#define RPR_CONTEXT_ENABLE_RASTERIZATION 0x1036 // Enable first hit rasterization
+#define RPR_CONTEXT_RESTIR_SPATIAL_RESAMPLE_ITERATIONS 0x1037 // World space ReSTIR spatial resample iteration count
+#define RPR_CONTEXT_RESTIR_MAX_RESERVOIRS_PER_CELL 0x1038 // Max reservoirs per world space hash grid cell
+#define RPR_CONTEXT_ENABLE_HALFRES_INDIRECT 0x1039 // Enable indirect downsample
+#define RPR_CONTEXT_ENABLE_RADIANCE_CACHE 0x1003B // Enable Radiance Cache.
+// Set ReSTIR GI bias correction method
+// 0 - No bias correction (biased)
+// 1 - Uniform weights    (unbiased, variance can be very high)
+// 2 - Stochastic MIS     (unbiased, variance is very low)      [  optimal  ]
+// 3 - Deterministic MIS  (unbiased, variance is even lower)    [ expensive ]
+#define RPR_CONTEXT_RESTIR_GI_BIAS_CORRECTION 0x1003C
+#define RPR_CONTEXT_RESTIR_GI_ENABLE_SAMPLE_VALIDATION 0x1003D // Enable sample validation which helps to remove temporal lag of indirect lighting at the cost of decreased performance
+#define RPR_CONTEXT_ENABLE_MOTION_BLUR 0x1003E // Enable motion blur
+#define RPR_CONTEXT_MOTION_BLUR_SAMPLE_COUNT 0x1003F // Set sample count for motion blur
+
 
 /* Traversal modes */
 #define RPR_HYBRID_TRAVERSAL_STATIC_TLAS_SEPARATE 0x1 ///< Use a separate acceleration structure for static objects
@@ -210,6 +224,7 @@ struct RPRHybridKernelsPathInfo
 // rprShapeGetInfo extension
 /* rpr_shape_info */
 #define RPR_SHAPE_LIGHTMAP_CHART_INDEX 0x1440
+#define RPR_INSTANCE_USE_UNIQUE_ATTRIBUTES 0x1602
 
 #define RPR_CAMERA_UV_LIGHTMAP_CHART_INDEX 0x1441
 #define RPR_FRAMEBUFFER_TYPE 0x1442
@@ -229,6 +244,26 @@ struct RPRHybridKernelsPathInfo
 #define RPR_TONE_MAPPING_FILMIC 1u
 #define RPR_TONE_MAPPING_ACES 2u
 #define RPR_TONE_MAPPING_REINHARD 3u
+#define RPR_TONE_MAPPING_PHOTO_LINEAR 4u
+
+/* RPR_CONTEXT_CREATEPROP_HYBRID_VIDEO_API acceptable values*/
+#define RPR_HYBRID_VIDEO_API_VULKAN 0u
+#define RPR_HYBRID_VIDEO_API_D3D12 1u
+
+/** @brief Create an instance of an object with separate buffer for vertex attributes
+*
+*  Possible error codes are:
+*
+*      RPR_ERROR_OUT_OF_SYSTEM_MEMORY
+*      RPR_ERROR_OUT_OF_VIDEO_MEMORY
+*      RPR_ERROR_INVALID_PARAMETER
+*
+*  @param  context  The context to create an instance for
+*  @param  shape    Parent shape for an instance
+*  @param  out_instance   Pointer to instance object
+*  @return RPR_SUCCESS in case of success, error code otherwise
+*/
+extern RPR_API_ENTRY rpr_status rprContextCreateMeshInstanceWithUniqueAttributes(rpr_context in_context, rpr_shape in_shape, rpr_shape* shape_out);
 
 /**
  * Sets directional light shadow splits count for for rasterization renderer.
@@ -376,28 +411,38 @@ typedef rpr_int (*rprShapeSetTransformBatch_func)(const ShapeTransform *transfor
 // Extends rpr_component_type
 typedef enum
 {
-    RPR_FORMAT_BC1_UNORM =      0x1000,
-    RPR_FORMAT_BC1_UNORM_SRGB = 0x1001,
-    RPR_FORMAT_BC2_UNORM  =     0x1002,
-    RPR_FORMAT_BC2_UNORM_SRGB = 0x1003,
-    RPR_FORMAT_BC3_UNORM =      0x1004,
-    RPR_FORMAT_BC3_UNORM_SRGB = 0x1005,
-    RPR_FORMAT_BC4_UNORM =      0x1006,
-    RPR_FORMAT_BC4_SNORM =      0x1007,
-    RPR_FORMAT_BC5_UNORM =      0x1008,
-    RPR_FORMAT_BC5_SNORM =      0x1009,
-    RPR_FORMAT_BC6H_SF16 =      0x1010,
-    RPR_FORMAT_BC6H_UF16 =      0x1011,
-    RPR_FORMAT_BC7_UNORM =      0x1012,
-    RPR_FORMAT_BC7_UNORM_SRGB = 0x1013,
-} rpr_compressed_format ;
+    RPR_FORMAT_BC1_UNORM =           0x1000,
+    RPR_FORMAT_BC1_UNORM_SRGB =      0x1001,
+    RPR_FORMAT_BC2_UNORM  =          0x1002,
+    RPR_FORMAT_BC2_UNORM_SRGB =      0x1003,
+    RPR_FORMAT_BC3_UNORM =           0x1004,
+    RPR_FORMAT_BC3_UNORM_SRGB =      0x1005,
+    RPR_FORMAT_BC4_UNORM =           0x1006,
+    RPR_FORMAT_BC4_SNORM =           0x1007,
+    RPR_FORMAT_BC5_UNORM =           0x1008,
+    RPR_FORMAT_BC5_SNORM =           0x1009,
+    RPR_FORMAT_BC6H_SF16 =           0x100A,
+    RPR_FORMAT_BC6H_UF16 =           0x100B,
+    RPR_FORMAT_BC7_UNORM =           0x100C,
+    RPR_FORMAT_BC7_UNORM_SRGB =      0x100D,
+    RPR_FORMAT_B8G8R8A8_UNORM =      0x100E,
+    RPR_FORMAT_B8G8R8A8_UNORM_SRGB = 0x100F,
+} rpr_format_ext ;
 
-typedef struct //rpr_comressed_image_desc
+typedef enum
+{
+    RPR_VECTOR_COMPONENT_TYPE_UNDEFINED = 0x0,
+    RPR_VECTOR_COMPONENT_TYPE_FLOAT32 = 0x1,
+    RPR_VECTOR_COMPONENT_TYPE_UINT32 =  0x2,
+    RPR_VECTOR_COMPONENT_TYPE_INT32 =   0x3,
+} rpr_vector_component_type ;
+
+typedef struct //rpr_image_desc_ext
 {
     rpr_uint image_width;
     rpr_uint image_height;
     rpr_uint mip_count;
-} rpr_comressed_image_desc;
+} rpr_image_desc_ext;
 
 /**
  * Create compressed image from memory.
@@ -410,8 +455,65 @@ typedef struct //rpr_comressed_image_desc
  * @param  mip_data     Array of pointers to each mip data (length is image_desc->mip_count).
  * @param  data_size    Array of data size for each mip (length is image_desc->mip_count).
  */
-typedef rpr_int(*rprContextCreateCompressedImage_func)(rpr_context context, rpr_compressed_format format, const rpr_comressed_image_desc* image_desc, const void** mip_data, const size_t* data_size, rpr_image* out_image);
+typedef rpr_int(*rprContextCreateCompressedImage_func)(rpr_context context, rpr_format_ext format, const rpr_image_desc_ext* image_desc, const void** mip_data, const size_t* data_size, rpr_image* out_image);
 #define RPR_CONTEXT_CREATE_COMPRESSED_IMAGE "rprContextCreateCompressedImage"
+
+/**
+ * Create image from external image handle.
+ *
+ * @param  context        The context to create image
+ * @param  image_format   Format description.
+ * @param  format_ext     Extended format description if rpr_image_format could't describe actual format, in this case image_format.type should be RPR_COMPONENT_TYPE_UNKNOWN.
+ * @param  image_desc     Image description.
+ * @param  external_image External image handle. Supported handles: VkImage*, ID3D12Resource*.
+ * @param  out_image      Pointer to image object
+ */
+typedef rpr_int(*rprContextCreateImageFromExternalHandle_func)(rpr_context context, rpr_image_format image_format, rpr_format_ext format_ext,
+    const rpr_image_desc_ext* image_desc, const void* external_image, rpr_image* out_image);
+#define RPR_CONTEXT_CREATE_IMAGE_FROM_EXTERNAL_HANDLE "rprContextCreateImageFromExternalHandle"
+
+struct rpr_stats
+{
+    struct rpr_stat
+    {
+        rpr_uint count;
+        size_t size;
+    };
+
+    rpr_uint primitives;
+    rpr_uint draw_calls;
+
+    struct rpr_stat images;
+    struct rpr_stat images_cpu;
+    struct rpr_stat images_cpu_gpu;
+    struct rpr_stat images_gpu_cpu;
+    struct rpr_stat images_gpu;
+    struct rpr_stat buffers;
+    struct rpr_stat buffers_cpu;
+    struct rpr_stat buffers_cpu_gpu;
+    struct rpr_stat buffers_gpu_cpu;
+    struct rpr_stat buffers_gpu;
+    struct rpr_stat staging_buffers;
+    struct rpr_stat vertex_buffers;
+    struct rpr_stat index_buffers;
+    struct rpr_stat as_scratch_buffers;
+    struct rpr_stat face_material_buffers;
+    struct rpr_stat mesh_buffers;
+    struct rpr_stat color_attachments;
+    struct rpr_stat depth_attachments;
+    struct rpr_stat storage_images;
+    struct rpr_stat blas;
+    struct rpr_stat tlas;
+
+    size_t mesh_data_pool_size;
+    size_t acceleration_structure_pool_size;
+    size_t staging_pool_size;
+    size_t acc_scratch_pool_size;
+
+    size_t total_allocated;
+    size_t total_used;
+    size_t total_free;
+};
 
 #ifdef __cplusplus
 }
